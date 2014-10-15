@@ -26,8 +26,16 @@
             img.onerror = function () {
                 callback(true);
             };
-            img.setAttribute('crossOrigin', 'Anonymous');
-            img.src = 'http://gtms03.alicdn.com/tps/i3/TB1y0EsGpXXXXbGXpXXaCx9JFXX-1-1.png';
+            try {
+                img.setAttribute('crossOrigin', 'Anonymous');
+            } catch (err) {
+                alert('err set attr:' + err);
+            }
+            try {
+                img.src = 'http://gtms03.alicdn.com/tps/i3/TB1y0EsGpXXXXbGXpXXaCx9JFXX-1-1.png';
+            } catch (err) {
+                alert('err set src:' + err);
+            }
         };
         detectCorsCanvas(function (isSupport) {
             document.getElementById('result').innerHTML = String(isSupport);
