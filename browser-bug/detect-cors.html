@@ -2,15 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <title>Detect CORS</title>
 </head>
 <body>
+    <h1 id="result"></h1>
     <script>
         var detectCorsCanvas = function (callback) {
             var img = new Image();
             img.onload = function () {
                 try {
-                    var canvas = dom.create('<canvas width="1px" height="1px"></canvas>');
+                    var canvas = document.createElement('canvas');
+                    canvas.setAttribute('width', '1px');
+                    canvas.setAttribute('height', '1px');
                     var ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0);
                     canvas.toDataURL();
@@ -22,10 +26,12 @@
             img.onerror = function () {
                 callback(true);
             };
-            dom.attr(img, 'crossOrigin', 'Anonymous');
+            img.setAttribute('crossOrigin', 'Anonymous');
             img.src = 'http://gtms03.alicdn.com/tps/i3/TB1y0EsGpXXXXbGXpXXaCx9JFXX-1-1.png';
         };
-        detectCorsCanvas();
+        detectCorsCanvas(function (isSupport) {
+            document.getElementById('result').innerHTML = String(isSupport);
+        });
     </script>
 </body>
 </html>
