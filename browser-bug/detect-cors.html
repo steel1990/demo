@@ -12,6 +12,10 @@
             var detectCorsCanvas = function (callback) {
                 var img = new Image();
                 img.onload = function () {
+                    var isSupport = false;
+                    setTimeout(function () {
+                        callback(isSupport);
+                    }, 0);
                     try {
                         var canvas = document.createElement('canvas');
                         canvas.setAttribute('width', '1px');
@@ -19,9 +23,9 @@
                         var ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0);
                         canvas.toDataURL();
-                        callback(true);
+                        isSupport = true;
                     } catch(err) {
-                        callback(false);
+                        isSupport = false;
                     }
                 };
                 img.onerror = function () {
