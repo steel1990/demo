@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+    <title>抽奖设置</title>
+    <link rel="stylesheet" href="site.min.css">
+  </head>
+  <body>
+    <div class="x-btn">导入姓名</div>
+    <input id="import-input" class="x-btn" type="file" accept="text/plain">
+    <div id="clear-btn" class="x-btn">清除数据</div>
+
+    <div class="lottery-result">
+      <h2>抽奖结果：</h2>
+      <div id="lottery-result-list"></div>
+      <h2>参与抽奖名单：</h2>
+      <div id="lottery-name-list"></div>
+    </div>
+
+    <script>
+      try {
+        var data = JSON.parse(localStorage._lotteryInfo);
+      } catch (err) {
+        data = {};
+      }
+
+      data.prizedNameList = data.prizedNameList || [];
+      data.nameList = data.nameList || [];
+  
+      document.getElementById('lottery-result-list').innerHTML = data.prizedNameList.join(', ');
+      document.getElementById('lottery-name-list').innerHTML = data.nameList.join(', ');
+
+      document.getElementById('clear-btn').addEventListener('click', function () {
+        if (window.confirm('清除数据不可恢复，确定清除？')) {
+          localStorage._lotteryInfo = '';
+          location.reload();
+        }
+      });
+
+      function saveToLocalStorage (nameList, prizedNameList) {
+          try {
+              localStorage._lotteryInfo = JSON.stringify({
+                  nameList: nameList,
+                  prizedNameList: prizedNameList
+              });
+          } catch (err) {
+              console.log('err');
+          }
+      }
+
+      document.getElementById('import-input').addEventListener('change', function (evt) {
+        var file = evt.target.files[0];
+        if (!file) {
+          return;
+        }
+        var r = new FileReader();
+        r.onload = function(e) { 
+          var contents = e.target.result;
+          var nameList = String(contents).split(/,|[\n\r]+/);
+          nameList = nameList.filter(x => !/^\s*$/.test(x));
+          console.log(nameList);
+          if (window.confirm('导入数据将清除现有数据，确认？')) {
+            saveToLocalStorage(nameList, []);
+            location.reload();
+          }
+        }
+
+        if (location.hash.indexOf('utf8') > 0) {
+          r.readAsText(file);
+        } else {
+          r.readAsText(file, 'gbk');
+        }
+      });
+    </script>
+  </body>
+</html>
