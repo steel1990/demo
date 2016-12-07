@@ -34,7 +34,11 @@
 
       document.getElementById('clear-btn').addEventListener('click', function () {
         if (window.confirm('清除数据不可恢复，确定清除？')) {
-          localStorage._lotteryInfo = '';
+          try {
+            var data = JSON.parse(localStorage._lotteryInfo);
+            data.prizedNameList = [];
+            localStorage._lotteryInfo = JSON.stringify(data);
+          } catch (err) {}
           location.reload();
         }
       });
